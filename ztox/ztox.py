@@ -1,7 +1,5 @@
-import pickle
 from argparse import ArgumentParser, RawTextHelpFormatter
-from importlib import resources
-
+import astropy.cosmology as cosmo
 
 def ztox() :
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
@@ -16,25 +14,22 @@ def ztox() :
     except :
         print('Provide a value of z')
 
-    with resources.open_binary('ztox','lcdm1.pck') as fp :
-        temp_dict = pickle.load(fp)
-        age = temp_dict["age"]
-        hofz = temp_dict['hubble']
-        RH = temp_dict['RH']
-    with resources.open_binary('ztox','lcdm2.pck') as fp :
-        temp_dict = pickle.load(fp)
-        comoving = temp_dict["comoving"]
-        dA = temp_dict['dA']
-        dL = temp_dict['dL']
+    z=0.1
+    H0=67.36
+    OmegaM0=0.3153
+    OmegaB0=0.05
+    OmegaDE=0.6847
+    Tcmb0=0
+    model=cosmo.LambdaCDM(H0=H0,Om0=OmegaM0,Ob0=OmegaB0,Ode0=OmegaDE,Tcmb0=Tcmb0)
 
-    agez = age(zin)
-    age0 = age(0)
+    agez = model.age(zin)
+    age0 = model.age(0)
     lookbacktime = age0 - agez
-    hz = hofz(zin)
-    comovingZ = comoving(zin)
-    dAz = dA(zin)
-    dLz = dL(zin)
-    Rhz = RH(zin)
+    hz = model.H(zin)
+    comovingZ = model.comoving_distance(zin)
+    dAz = model.angular_diameter_distance(zin)
+    dLz = model.luminosity_distance(zin)
+    Rhz = 1/hz
     print('\n')
     print( 'Age of the universe at z = {}        : '.format(zin), agez, 'Gyr')
     print(  'Lookback time to z = {}              : '.format(zin), lookbacktime, 'Gyr')
