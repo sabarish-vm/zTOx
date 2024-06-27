@@ -1,7 +1,7 @@
 # Installation instructions
 
 ```
-pip install git+https://github.com/Sabb95/zTOx.git
+pip install git+https://github.com/sabarish-vm/zTOx.git
 ```
 
 # Usage instructions
